@@ -1,0 +1,34 @@
+<idea-plugin>
+    <id>com.github.CodeAssistPlugin</id>
+    <name>CodeAssistPlugin</name>
+    <version>1.0-SNAPSHOT</version>
+    <vendor email="664019848@qq.com" url="http://www.sunsharing.com">Hang</vendor>
+
+    <idea-version since-build="1.0-SNAPSHOT"></idea-version>
+
+    <description>Code Assist.This is an auxiliary plug-in that generates Java code through SQL statement. At present, it only supports MySQL.</description>
+
+    <change-notes>This is the first version</change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <!--<toolWindow id="Sample Calendar" secondary="true" icon="/myToolWindow/plus.png" anchor="right"-->
+        <!--factoryClass="MyToolWindowFactory"/>-->
+        <toolWindow id="Work Assist" secondary="true" icon="/myToolWindow/plus.png" anchor="right"
+                    factoryClass="SQLInputWindow"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <group id="MyPlugin.SampleMenu" text="Greeting" description="Greeting menu">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action class="HelloAction" id="Myplugin.Textboxes" text="Hello" description="Syas hello"/>
+        </group>
+    </actions>
+</idea-plugin>
