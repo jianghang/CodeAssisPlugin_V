@@ -2,7 +2,7 @@ package com.github.db;
 
 import java.util.Date;
 
-public enum MySqlDataTypeEnum {
+public enum MySqlDataTypeEnum{
     TINYINT(Integer.class),
     SAMLLINT(Integer.class),
     INT(Integer.class),
@@ -19,7 +19,7 @@ public enum MySqlDataTypeEnum {
     VARCHAR(String.class),
     TINYBLOB(String.class),
     TINYTEXT(String.class),
-    BLOB(String.class),
+    BLOB(byte[].class),
     TEXT(String.class),
     MEDIUMBLOB(String.class),
     MEDIUMTEXT(String.class),
@@ -33,15 +33,15 @@ public enum MySqlDataTypeEnum {
         this.javaClass = javaClass;
     }
 
-    public Class getJavaClass(){
-        return this.javaClass;
-    }
-
     public static void main(String[] args) {
         Class cls = TINYINT.javaClass;
         if(cls.equals(Integer.class)){
             System.out.println("yes");
             System.out.println(TINYINT.name());
         }
+    }
+
+    public Class getJavaClass() {
+        return this.javaClass;
     }
 }

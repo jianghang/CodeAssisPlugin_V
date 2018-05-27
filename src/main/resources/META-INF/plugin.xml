@@ -20,7 +20,7 @@
         <!-- Add your extensions here -->
         <!--<toolWindow id="Sample Calendar" secondary="true" icon="/myToolWindow/plus.png" anchor="right"-->
         <!--factoryClass="MyToolWindowFactory"/>-->
-        <toolWindow id="Work Assist" secondary="true" icon="/myToolWindow/plus.png" anchor="right"
+        <toolWindow id="Work Assist" icon="/myToolWindow/plus.png" anchor="right" canCloseContents="true"
                     factoryClass="SQLInputWindow"/>
     </extensions>
 

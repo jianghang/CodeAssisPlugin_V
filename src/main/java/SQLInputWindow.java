@@ -1,19 +1,20 @@
 import com.github.db.DBUtils;
 import com.github.db.DatabaseTypeEnum;
+import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.ide.util.TreeFileChooser;
-import com.intellij.ide.util.TreeFileChooserFactory;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.ui.TextBrowseFolderListener;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiPackage;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.intellij.ui.content.ContentManager;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,7 @@ public class SQLInputWindow implements ToolWindowFactory {
     private static final String SQL_CONTENT = "sqlContent";
 
     private Project project;
+    private PsiPackage psiPackage;
 
     private JPanel sqlInputContent;
     private JEditorPane sqlEditor;
@@ -68,8 +70,8 @@ public class SQLInputWindow implements ToolWindowFactory {
             logger.info("dataUrl: " + dataUrl + " username: " + username + " password: " + password);
             logger.info("packageName: " + packageName + " className: " + className);
             logger.info("dataBaseComboBox Index: " + dataBaseComboBox.getSelectedIndex());
-            String checkResult = com.github.utils.StringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
-            if(!StringUtils.isEmpty(checkResult)){
+            boolean checkResult = com.github.utils.StringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
+            if(checkResult){
                 showMessage("有必填字段为空");
                 return;
             }
@@ -85,8 +87,13 @@ public class SQLInputWindow implements ToolWindowFactory {
                     return;
                 }
                 ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn,sqlContent);
-                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType)).buildJavaCode(metaData,className,packageName,"");
+                DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType).buildJavaCode(metaData,className,packageName);
+                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType)).buildJavaCode(metaData,className,packageName);
                 javaEditor.setText(javaCode);
+
+                if(StringUtils.isNotEmpty(filePath.getText())){
+                    createFileInWriteCommandAction(psiPackage,className,javaCode);
+                }
             } catch (ClassNotFoundException | SQLException e1) {
                 e1.printStackTrace();
                 showMessage(e1.getMessage());
@@ -100,10 +107,31 @@ public class SQLInputWindow implements ToolWindowFactory {
 //        fileButton.addBrowseFolderListener(folderListener);
 
         fileButton.addActionListener(e -> {
-            PackageChooserDialog packageChooserDialog = new PackageChooserDialog("Select Package",project);
+            PackageChooserDialog packageChooserDialog = new PackageChooserDialog("Select Package Path",project);
             packageChooserDialog.show();
-            PsiPackage psiPackage = packageChooserDialog.getSelectedPackage();
-            filePath.setText(psiPackage.getQualifiedName());
+            psiPackage = packageChooserDialog.getSelectedPackage();
+            if(Objects.nonNull(psiPackage)){
+                filePath.setText(psiPackage.getQualifiedName());
+            }
+        });
+    }
+
+    private void createFileInWriteCommandAction(PsiPackage psiPackage,String className,String javaSource){
+        final String fileName = className + JavaFileType.DOT_DEFAULT_EXTENSION;
+        PsiDirectory psiDirectory = psiPackage.getDirectories()[0];
+        PsiFile psiFile = psiDirectory.findFile(fileName);
+        if(Objects.nonNull(psiFile)){
+            showMessage(fileName + " file is exist!");
+            return;
+        }
+
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+            PsiFile psiFileContent = psiFileFactory.createFileFromText(fileName,JavaFileType.INSTANCE,javaSource);
+            PsiDirectory[] psiDirectories = psiPackage.getDirectories();
+            logger.info("directory name: " + psiDirectories[0].getName());
+
+            psiDirectories[0].add(psiFileContent);
         });
     }
 
@@ -130,7 +158,7 @@ public class SQLInputWindow implements ToolWindowFactory {
 
     private void showMessage(String content) {
         Icon icon = new ImageIcon(getClass().getResource("/myToolWindow/plus.png"));
-        Messages.showMessageDialog(content,"SQL",icon);
+        Messages.showMessageDialog(project,content,"SQL",icon);
     }
 
     @Override
@@ -139,13 +167,15 @@ public class SQLInputWindow implements ToolWindowFactory {
         this.toolWindow = toolWindow;
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(sqlInputContent, "", false);
-        toolWindow.getContentManager().addContent(content);
+        ContentManager contentManager = toolWindow.getContentManager();
+        contentManager.addContent(content);
+        contentManager.setSelectedContent(content);
 
         PropertiesComponent component = PropertiesComponent.getInstance(this.project);
         String databaseType = component.getValue(DATABASE_TYPE);
         if(StringUtils.isNotEmpty(databaseType)){
             logger.info("databaseType: " + databaseType + " " + DatabaseTypeEnum.getIndexByType(databaseType));
-            dataBaseComboBox.setSelectedItem(DatabaseTypeEnum.getIndexByType(databaseType));
+            dataBaseComboBox.setSelectedIndex(DatabaseTypeEnum.getIndexByType(databaseType));
         }
         String dataUrl = component.getValue(DATA_URL);
         if(StringUtils.isNotEmpty(dataUrl)){

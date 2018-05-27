@@ -25,13 +25,13 @@ public class StringUtils {
         return builder.toString();
     }
 
-    public static String checkStringsEmpty(String... str){
+    public static boolean checkStringsEmpty(String... str){
         for(String s : str){
             if(org.apache.commons.lang.StringUtils.isEmpty(s)){
-                return s;
+                return true;
             }
         }
 
-        return null;
+        return false;
     }
 }

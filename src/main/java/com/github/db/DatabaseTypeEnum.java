@@ -19,15 +19,43 @@ public enum DatabaseTypeEnum {
     ORACLE("Oracle","oracle.jdbc.OracleDriver",0){
 
         @Override
-        public String buildJavaCode(ResultSetMetaData metaData,String className,String packageName,String filePath) {
+        public String buildJavaCode(ResultSetMetaData metaData,String className,String packageName) throws SQLException {
+            String typeName;
+            String columnName;
+            OralceDataTypeEunm dataTypeEnum;
+            TypeSpec.Builder builder = CodeGenerator.buildClass(className);
+            FieldSpec fieldSpec;
+            MethodSpec getMethodSpec;
+            MethodSpec setMethodSpec;
+            List<FieldSpec> fieldSpecList = new ArrayList<>();
+            List<MethodSpec> methodSpecList = new ArrayList<>();
+            for(int i = 1;i <= metaData.getColumnCount();i++){
+                typeName = metaData.getColumnTypeName(i);
+                columnName = metaData.getColumnName(i);
+                columnName = columnName.toLowerCase();
+                if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
+                    columnName = com.github.utils.StringUtils.underlineToCamelhump(columnName);
+                }
+                dataTypeEnum = OralceDataTypeEunm.valueOf(typeName);
+                getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,dataTypeEnum.getJavaClass());
+                methodSpecList.add(getMethodSpec);
+                setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName,dataTypeEnum.getJavaClass());
+                methodSpecList.add(setMethodSpec);
+                fieldSpec = FieldSpec.builder(dataTypeEnum.getJavaClass(),columnName,Modifier.PRIVATE).build();
+                fieldSpecList.add(fieldSpec);
+            }
 
-            return null;
+            fieldSpecList.forEach(builder::addField);
+            methodSpecList.forEach(builder::addMethod);
+            JavaFile javaFile = JavaFile.builder(packageName,builder.build()).build();
+
+            return javaFile.toString();
         }
     },
     MYSQL("MySQL","com.mysql.jdbc.Driver",1) {
 
         @Override
-        public String buildJavaCode(ResultSetMetaData metaData,String className,String packageName,String filePath) throws SQLException {
+        public String buildJavaCode(ResultSetMetaData metaData,String className,String packageName) throws SQLException {
             String typeName;
             String columnName;
             MySqlDataTypeEnum dataTypeEnum;
@@ -56,9 +84,6 @@ public enum DatabaseTypeEnum {
             fieldSpecList.forEach(builder::addField);
             methodSpecList.forEach(builder::addMethod);
             JavaFile javaFile = JavaFile.builder(packageName,builder.build()).build();
-            if(StringUtils.isNotEmpty(filePath)){
-                Path path = Paths.get(filePath);
-            }
 
             return javaFile.toString();
         }
@@ -68,7 +93,7 @@ public enum DatabaseTypeEnum {
     private String databaseDriver;
     private Integer index;
 
-    public abstract String buildJavaCode(ResultSetMetaData metaData,String className,String packageName,String filePath) throws SQLException;
+    public abstract String buildJavaCode(ResultSetMetaData metaData,String className,String packageName) throws SQLException;
 
     DatabaseTypeEnum(String dataType,String databaseDriver,Integer index){
         this.dataType = dataType;

@@ -2,11 +2,13 @@ package com.github.db;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.github.generator.CodeGenerator;
+import com.github.utils.StringUtils;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+import javax.lang.model.element.Modifier;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class DBUtils {
 //        USER = "cobweb3";
 //        PASSWORD = "admin";
         //1.加载驱动程序
-        Class.forName(DatabaseTypeEnum.ORACLE.getDatabaseDriver());
+        Class.forName(DatabaseTypeEnum.MYSQL.getDatabaseDriver());
         //2.获得数据库链接
         Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
         //3.通过数据库的连接操作数据库，实现增删改查（使用Statement类）
@@ -60,18 +62,18 @@ public class DBUtils {
             String typeName = resultSetMetaData.getColumnTypeName(i);
             String columnName = resultSetMetaData.getColumnName(i);
             System.out.println(typeName + " : " + columnName);
-//            MySqlDataTypeEnum typeEnum = MySqlDataTypeEnum.valueOf(typeName);
-//            columnName = columnName.toLowerCase();
-//            if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
-//                columnName = StringUtils.underlineToCamelhump(columnName);
-//            }
-//            getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,typeEnum.getJavaClass());
-//            methodSpecList.add(getMethodSpec);
-//            setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName,typeEnum.getJavaClass());
-//            methodSpecList.add(setMethodSpec);
-//            fieldSpec = FieldSpec.builder(typeEnum.getJavaClass(),columnName,Modifier.PRIVATE).build();
-//            fieldSpecList.add(fieldSpec);
-//            System.out.println(columnName + " : " + typeName);
+            MySqlDataTypeEnum typeEnum = MySqlDataTypeEnum.valueOf(typeName);
+            columnName = columnName.toLowerCase();
+            if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
+                columnName = StringUtils.underlineToCamelhump(columnName);
+            }
+            getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,typeEnum.getJavaClass());
+            methodSpecList.add(getMethodSpec);
+            setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName,typeEnum.getJavaClass());
+            methodSpecList.add(setMethodSpec);
+            fieldSpec = FieldSpec.builder(typeEnum.getJavaClass(),columnName,Modifier.PRIVATE).build();
+            fieldSpecList.add(fieldSpec);
+            System.out.println(columnName + " : " + typeName);
         }
 
         fieldSpecList.forEach(builder::addField);
