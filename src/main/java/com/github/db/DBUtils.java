@@ -2,7 +2,7 @@ package com.github.db;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.github.generator.CodeGenerator;
-import com.github.utils.StringUtils;
+import com.github.utils.CodeStringUtils;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -65,7 +65,7 @@ public class DBUtils {
             MySqlDataTypeEnum typeEnum = MySqlDataTypeEnum.valueOf(typeName);
             columnName = columnName.toLowerCase();
             if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
-                columnName = StringUtils.underlineToCamelhump(columnName);
+                columnName = CodeStringUtils.underlineToCamelhump(columnName);
             }
             getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,typeEnum.getJavaClass());
             methodSpecList.add(getMethodSpec);

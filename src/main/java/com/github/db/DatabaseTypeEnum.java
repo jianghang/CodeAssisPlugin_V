@@ -1,15 +1,13 @@
 package com.github.db;
 
 import com.github.generator.CodeGenerator;
+import com.github.utils.CodeStringUtils;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.apache.commons.lang.StringUtils;
 
 import javax.lang.model.element.Modifier;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public enum DatabaseTypeEnum {
                 columnName = metaData.getColumnName(i);
                 columnName = columnName.toLowerCase();
                 if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
-                    columnName = com.github.utils.StringUtils.underlineToCamelhump(columnName);
+                    columnName = CodeStringUtils.underlineToCamelhump(columnName);
                 }
                 dataTypeEnum = OralceDataTypeEunm.valueOf(typeName);
                 getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,dataTypeEnum.getJavaClass());
@@ -70,7 +68,7 @@ public enum DatabaseTypeEnum {
                 columnName = metaData.getColumnName(i);
                 columnName = columnName.toLowerCase();
                 if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
-                    columnName = com.github.utils.StringUtils.underlineToCamelhump(columnName);
+                    columnName = CodeStringUtils.underlineToCamelhump(columnName);
                 }
                 dataTypeEnum = MySqlDataTypeEnum.valueOf(typeName);
                 getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,dataTypeEnum.getJavaClass());

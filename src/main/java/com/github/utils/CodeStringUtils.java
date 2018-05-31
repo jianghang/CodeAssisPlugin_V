@@ -1,6 +1,6 @@
 package com.github.utils;
 
-public class StringUtils {
+public class CodeStringUtils {
 
     public static String underlineToCamelhump(String columnName) {
         StringBuilder builder = new StringBuilder();

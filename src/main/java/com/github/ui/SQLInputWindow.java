@@ -2,6 +2,7 @@ package com.github.ui;
 
 import com.github.db.DBUtils;
 import com.github.db.DatabaseTypeEnum;
+import com.github.utils.CodeStringUtils;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.ide.util.PropertiesComponent;
@@ -77,7 +78,7 @@ public class SQLInputWindow implements ToolWindowFactory {
             logger.info("packageName: " + packageName + " className: " + className);
             logger.info("dataBaseComboBox Index: " + dataBaseComboBox.getSelectedIndex());
             logger.info("Annotation: " + annotationStr);
-            boolean checkResult = com.github.utils.StringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
+            boolean checkResult = CodeStringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
             if(checkResult){
                 showMessage("有必填字段为空");
                 return;
