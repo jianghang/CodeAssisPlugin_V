@@ -1,8 +1,7 @@
 package com.github.generator;
 
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
 
@@ -41,9 +40,14 @@ public class CodeGenerator {
         return methodName;
     }
 
+
     public static void main(String[] args) {
         TypeSpec.Builder builder = buildClass("Sample");
         builder.addField(Integer.class,"sample",Modifier.PRIVATE);
+
+        AnnotationSpec annotationSpec = AnnotationSpec.builder(JSONField.class).addMember("name","$S","yu").build();
+        FieldSpec fieldSpec = FieldSpec.builder(Integer.class,"yyy",Modifier.PRIVATE).addAnnotation(annotationSpec).build();
+        builder.addField(fieldSpec);
 
         MethodSpec methodSpec = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC,Modifier.STATIC)

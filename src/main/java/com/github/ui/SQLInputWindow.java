@@ -39,6 +39,8 @@ public class SQLInputWindow implements ToolWindowFactory {
     private static final String CLASS_NAME = "className";
     private static final String SQL_CONTENT = "sqlContent";
 
+    private static String annotationStr = "";
+
     private Project project;
     private PsiPackage psiPackage;
 
@@ -55,6 +57,8 @@ public class SQLInputWindow implements ToolWindowFactory {
     private JLabel saveUri;
     private JTextField filePath;
     private JButton fileButton;
+    private JRadioButton xmlRadioButton;
+    private JRadioButton jsonRadioButton;
     private ToolWindow toolWindow;
 
     public SQLInputWindow() {
@@ -72,6 +76,7 @@ public class SQLInputWindow implements ToolWindowFactory {
             logger.info("dataUrl: " + dataUrl + " username: " + username + " password: " + password);
             logger.info("packageName: " + packageName + " className: " + className);
             logger.info("dataBaseComboBox Index: " + dataBaseComboBox.getSelectedIndex());
+            logger.info("Annotation: " + annotationStr);
             boolean checkResult = com.github.utils.StringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
             if(checkResult){
                 showMessage("有必填字段为空");
@@ -116,6 +121,10 @@ public class SQLInputWindow implements ToolWindowFactory {
                 filePath.setText(psiPackage.getQualifiedName());
             }
         });
+
+        xmlRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
+
+        jsonRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
     }
 
     private void createFileInWriteCommandAction(PsiPackage psiPackage,String className,String javaSource){
