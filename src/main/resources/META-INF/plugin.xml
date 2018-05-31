@@ -21,14 +21,14 @@
         <!--<toolWindow id="Sample Calendar" secondary="true" icon="/myToolWindow/plus.png" anchor="right"-->
         <!--factoryClass="MyToolWindowFactory"/>-->
         <toolWindow id="Work Assist" icon="/myToolWindow/plus.png" anchor="right" canCloseContents="true"
-                    factoryClass="SQLInputWindow"/>
+                    factoryClass="com.github.ui.SQLInputWindow"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
-        <group id="MyPlugin.SampleMenu" text="Greeting" description="Greeting menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action class="HelloAction" id="Myplugin.Textboxes" text="Hello" description="Syas hello"/>
-        </group>
+        <!--<group id="MyPlugin.SampleMenu" text="Greeting" description="Greeting menu">-->
+            <!--<add-to-group group-id="MainMenu" anchor="last"/>-->
+            <!--<action class="com.github.ui.HelloAction" id="Myplugin.Textboxes" text="Hello" description="Syas hello"/>-->
+        <!--</group>-->
     </actions>
 </idea-plugin>

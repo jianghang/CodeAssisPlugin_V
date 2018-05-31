@@ -1,3 +1,5 @@
+package com.github.ui;
+
 import com.github.db.DBUtils;
 import com.github.db.DatabaseTypeEnum;
 import com.intellij.ide.highlighter.JavaFileType;
