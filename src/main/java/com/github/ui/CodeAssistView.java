@@ -7,19 +7,17 @@ import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.ex.EditorEx;
+import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiPackage;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
-import com.intellij.ui.content.ContentManager;
+import com.intellij.ui.EditorTextField;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -28,10 +26,9 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-@Deprecated
-public class SQLInputWindow implements ToolWindowFactory {
+public class CodeAssistView extends BaseView{
 
-    private static Logger logger = Logger.getLogger("SQLInputWindow");
+    private static Logger logger = Logger.getLogger("CodeAssistView");
 
     private static final String DATABASE_TYPE = "databaseType";
     private static final String DATA_URL = "dataUrl";
@@ -43,13 +40,12 @@ public class SQLInputWindow implements ToolWindowFactory {
 
     private static String annotationStr = "";
 
-    private Project project;
     private PsiPackage psiPackage;
 
     private JPanel sqlInputContent;
-    private JEditorPane sqlEditor;
+    private EditorTextField sqlEditor;
     private JButton convertButton;
-    private JEditorPane javaEditor;
+    private EditorTextField javaEditor;
     private JComboBox dataBaseComboBox;
     private JTextField dataBaseUrl;
     private JTextField userNameField;
@@ -61,10 +57,47 @@ public class SQLInputWindow implements ToolWindowFactory {
     private JButton fileButton;
     private JRadioButton xmlRadioButton;
     private JRadioButton jsonRadioButton;
-    private ToolWindow toolWindow;
 
-    public SQLInputWindow() {
+    public CodeAssistView(BasePanel basePanel,Project project,ToolWindow toolWindow){
+        super(basePanel,project,toolWindow);
+        initListener();
+        initState();
+    }
 
+    private void initState() {
+        PropertiesComponent component = PropertiesComponent.getInstance(this.project);
+        String databaseType = component.getValue(DATABASE_TYPE);
+        if(StringUtils.isNotEmpty(databaseType)){
+            logger.info("databaseType: " + databaseType + " " + DatabaseTypeEnum.getIndexByType(databaseType));
+            dataBaseComboBox.setSelectedIndex(DatabaseTypeEnum.getIndexByType(databaseType));
+        }
+        String dataUrl = component.getValue(DATA_URL);
+        if(StringUtils.isNotEmpty(dataUrl)){
+            dataBaseUrl.setText(dataUrl);
+        }
+        String username = component.getValue(USERNAME);
+        if(StringUtils.isNotEmpty(username)){
+            userNameField.setText(username);
+        }
+        String password = component.getValue(PASSWORD);
+        if(StringUtils.isNotEmpty(password)){
+            passwordField.setText(password);
+        }
+        String packageName = component.getValue(PACKAGE_NAME);
+        if(StringUtils.isNotEmpty(packageName)){
+            packageNameField.setText(packageName);
+        }
+        String className = component.getValue(CLASS_NAME);
+        if(StringUtils.isNotEmpty(className)){
+            classNameField.setText(className);
+        }
+        String sqlContent = component.getValue(SQL_CONTENT);
+        if(StringUtils.isNotEmpty(sqlContent)){
+            sqlEditor.setText(sqlContent);
+        }
+    }
+
+    private void initListener() {
         convertButton.addActionListener(e -> {
             String databaseType = Objects.requireNonNull(dataBaseComboBox.getSelectedItem()).toString();
             String dataUrl = dataBaseUrl.getText();
@@ -129,6 +162,11 @@ public class SQLInputWindow implements ToolWindowFactory {
         jsonRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
     }
 
+    @Override
+    public JPanel getPanel() {
+        return sqlInputContent;
+    }
+
     private void createFileInWriteCommandAction(PsiPackage psiPackage,String className,String javaSource){
         final String fileName = className + JavaFileType.DOT_DEFAULT_EXTENSION;
         PsiDirectory psiDirectory = psiPackage.getDirectories()[0];
@@ -146,6 +184,11 @@ public class SQLInputWindow implements ToolWindowFactory {
 
             psiDirectories[0].add(psiFileContent);
         });
+    }
+
+    private void showMessage(String content) {
+        Icon icon = new ImageIcon(getClass().getResource("/myToolWindow/plus.png"));
+        Messages.showMessageDialog(project,content,"CodeAssist",icon);
     }
 
     private void saveCurrentState(String databaseType, String dataUrl, String username, String password, String packageName, String className,String sqlContent) {
@@ -169,53 +212,27 @@ public class SQLInputWindow implements ToolWindowFactory {
         }
     }
 
-    private void showMessage(String content) {
-        Icon icon = new ImageIcon(getClass().getResource("/myToolWindow/plus.png"));
-        Messages.showMessageDialog(project,content,"SQL",icon);
-    }
+    private void createUIComponents() {
+        javaEditor = new EditorTextField("",project,JavaFileType.INSTANCE){
+            @Override
+            protected EditorEx createEditor() {
+                EditorEx editorEx = super.createEditor();
+                editorEx.setVerticalScrollbarVisible(true);
+                editorEx.setHorizontalScrollbarVisible(true);
+                return editorEx;
+            }
+        };
+        javaEditor.setOneLineMode(false);
 
-    @Override
-    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        this.project = project;
-        this.toolWindow = toolWindow;
-        toolWindow.setToHideOnEmptyContent(true);
-
-
-        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(sqlInputContent, "", false);
-        ContentManager contentManager = toolWindow.getContentManager();
-        contentManager.addContent(content);
-        contentManager.setSelectedContent(content);
-
-        PropertiesComponent component = PropertiesComponent.getInstance(this.project);
-        String databaseType = component.getValue(DATABASE_TYPE);
-        if(StringUtils.isNotEmpty(databaseType)){
-            logger.info("databaseType: " + databaseType + " " + DatabaseTypeEnum.getIndexByType(databaseType));
-            dataBaseComboBox.setSelectedIndex(DatabaseTypeEnum.getIndexByType(databaseType));
-        }
-        String dataUrl = component.getValue(DATA_URL);
-        if(StringUtils.isNotEmpty(dataUrl)){
-            dataBaseUrl.setText(dataUrl);
-        }
-        String username = component.getValue(USERNAME);
-        if(StringUtils.isNotEmpty(username)){
-            userNameField.setText(username);
-        }
-        String password = component.getValue(PASSWORD);
-        if(StringUtils.isNotEmpty(password)){
-            passwordField.setText(password);
-        }
-        String packageName = component.getValue(PACKAGE_NAME);
-        if(StringUtils.isNotEmpty(packageName)){
-            packageNameField.setText(packageName);
-        }
-        String className = component.getValue(CLASS_NAME);
-        if(StringUtils.isNotEmpty(className)){
-            classNameField.setText(className);
-        }
-        String sqlContent = component.getValue(SQL_CONTENT);
-        if(StringUtils.isNotEmpty(sqlContent)){
-            sqlEditor.setText(sqlContent);
-        }
+        sqlEditor = new EditorTextField("",project,PlainTextFileType.INSTANCE){
+            @Override
+            protected EditorEx createEditor() {
+                EditorEx editorEx = super.createEditor();
+                editorEx.setVerticalScrollbarVisible(true);
+                editorEx.setHorizontalScrollbarVisible(true);
+                return editorEx;
+            }
+        };
+        sqlEditor.setOneLineMode(false);
     }
 }

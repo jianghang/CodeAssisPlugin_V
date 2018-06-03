@@ -20,8 +20,12 @@
         <!-- Add your extensions here -->
         <!--<toolWindow id="Sample Calendar" secondary="true" icon="/myToolWindow/plus.png" anchor="right"-->
         <!--factoryClass="MyToolWindowFactory"/>-->
-        <toolWindow id="Work Assist" icon="/myToolWindow/plus.png" anchor="right" canCloseContents="true"
-                    factoryClass="com.github.ui.SQLInputWindow"/>
+        <!--<toolWindow id="Work Assist" icon="/myToolWindow/plus.png" anchor="right" canCloseContents="true"-->
+                    <!--factoryClass="com.github.ui.SQLInputWindow"/>-->
+
+        <!--<applicationService serviceImplementation="com.github.settings.CodeAssistVSettings"/>-->
+        <toolWindow id="Code Assist" icon="/myToolWindow/plus.png" anchor="right" canCloseContents="true"
+                    factoryClass="com.github.ui.CodeAssistWindowFactory"/>
     </extensions>
 
     <actions>
