@@ -61,6 +61,9 @@ public class SQLInputWindow implements ToolWindowFactory {
     private JButton fileButton;
     private JRadioButton xmlRadioButton;
     private JRadioButton jsonRadioButton;
+    private JTabbedPane tabbedPane1;
+    private JEditorPane editorPane1;
+    private JEditorPane editorPane2;
     private ToolWindow toolWindow;
 
     public SQLInputWindow() {
