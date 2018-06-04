@@ -12,18 +12,23 @@ import javax.lang.model.element.Modifier;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DBUtils {
 
-    private static DruidDataSource dataSource = new DruidDataSource();
+    private static ConcurrentHashMap<String,DruidDataSource> dataSourceConcurrentHashMap = new ConcurrentHashMap<>();
 
-    public static Connection getConnection(String url,String username,String password) throws ClassNotFoundException, SQLException {
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        Connection connection = dataSource.getConnection();
+    public static Connection getConnection(String projectName,String url,String username,String password) throws ClassNotFoundException, SQLException {
+        DruidDataSource dataSource = dataSourceConcurrentHashMap.get(projectName);
+        if(dataSource == null){
+            dataSource = new DruidDataSource();
+            dataSource.setUrl(url);
+            dataSource.setUsername(username);
+            dataSource.setPassword(password);
+            dataSourceConcurrentHashMap.put(projectName,dataSource);
+        }
 
-        return connection;
+        return dataSource.getConnection();
     }
 
     public static ResultSetMetaData getResultSetMetaData(Connection conn,String sql) throws SQLException {
@@ -54,8 +59,8 @@ public class DBUtils {
         int count = resultSetMetaData.getColumnCount();
         TypeSpec.Builder builder = CodeGenerator.buildClass("SampleSql");
         FieldSpec fieldSpec;
-        MethodSpec getMethodSpec;
-        MethodSpec setMethodSpec;
+        MethodSpec.Builder getMethodSpec;
+        MethodSpec.Builder setMethodSpec;
         List<FieldSpec> fieldSpecList = new ArrayList<>();
         List<MethodSpec> methodSpecList = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
@@ -68,9 +73,9 @@ public class DBUtils {
                 columnName = CodeStringUtils.underlineToCamelhump(columnName);
             }
             getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,typeEnum.getJavaClass());
-            methodSpecList.add(getMethodSpec);
+            methodSpecList.add(getMethodSpec.build());
             setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName,typeEnum.getJavaClass());
-            methodSpecList.add(setMethodSpec);
+            methodSpecList.add(setMethodSpec.build());
             fieldSpec = FieldSpec.builder(typeEnum.getJavaClass(),columnName,Modifier.PRIVATE).build();
             fieldSpecList.add(fieldSpec);
             System.out.println(columnName + " : " + typeName);

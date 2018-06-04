@@ -12,25 +12,23 @@ public class CodeGenerator {
         return typeSpec;
     }
 
-    public static MethodSpec buildGetMethodSpec(String columnName,Class cls) {
+    public static MethodSpec.Builder buildGetMethodSpec(String columnName,Class cls) {
         String methodName = createSetGetMethodName("get",columnName);
-        MethodSpec methodSpec = MethodSpec.methodBuilder(methodName)
+        MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(cls)
-                .addStatement("return " + columnName)
-                .build();
+                .addStatement("return " + columnName);
 
         return methodSpec;
     }
 
-    public static MethodSpec buildSetMethodSpec(String columnName,Class cls){
+    public static MethodSpec.Builder buildSetMethodSpec(String columnName,Class cls){
         String methodName = createSetGetMethodName("set",columnName);
-        MethodSpec methodSpec = MethodSpec.methodBuilder(methodName)
+        MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(cls,columnName)
                 .addStatement("this." + columnName + " = " + columnName)
-                .returns(void.class)
-                .build();
+                .returns(void.class);
         return methodSpec;
     }
 

@@ -89,15 +89,15 @@ public class SQLInputWindow implements ToolWindowFactory {
             Connection conn;
             String sqlContent = null;
             try {
-                conn = DBUtils.getConnection(dataUrl,username,password);
+                conn = DBUtils.getConnection(project.getName(),dataUrl,username,password);
                 sqlContent = sqlEditor.getText();
                 if(StringUtils.isEmpty(sqlContent)){
                     showMessage("SQL语句为空");
                     return;
                 }
                 ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn,sqlContent);
-                DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType).buildJavaCode(metaData,className,packageName);
-                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType)).buildJavaCode(metaData,className,packageName);
+                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType))
+                        .buildJavaCode(metaData,className,packageName,null);
                 javaEditor.setText(javaCode);
 
                 if(StringUtils.isNotEmpty(filePath.getText())){

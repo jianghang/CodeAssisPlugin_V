@@ -122,15 +122,15 @@ public class CodeAssistView extends BaseView{
             Connection conn;
             String sqlContent = null;
             try {
-                conn = DBUtils.getConnection(dataUrl,username,password);
+                conn = DBUtils.getConnection(project.getName(),dataUrl,username,password);
                 sqlContent = sqlEditor.getText();
                 if(StringUtils.isEmpty(sqlContent)){
                     showMessage("SQL语句为空");
                     return;
                 }
                 ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn,sqlContent);
-                DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType).buildJavaCode(metaData,className,packageName);
-                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType)).buildJavaCode(metaData,className,packageName);
+                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType))
+                        .buildJavaCode(metaData,className,packageName,annotationStr);
                 javaEditor.setText(javaCode);
 
                 if(StringUtils.isNotEmpty(filePath.getText())){
@@ -159,7 +159,7 @@ public class CodeAssistView extends BaseView{
 
         xmlRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
 
-        jsonRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
+        jsonRadioButton.addActionListener(e -> annotationStr = jsonRadioButton.getText());
     }
 
     @Override
