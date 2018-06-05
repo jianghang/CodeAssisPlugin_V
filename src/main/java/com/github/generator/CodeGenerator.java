@@ -4,6 +4,9 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 public class CodeGenerator {
 
@@ -47,6 +50,18 @@ public class CodeGenerator {
         FieldSpec fieldSpec = FieldSpec.builder(Integer.class,"yyy",Modifier.PRIVATE).addAnnotation(annotationSpec).build();
         builder.addField(fieldSpec);
 
+        AnnotationSpec annotationSpec1 = AnnotationSpec.builder(XmlRootElement.class)
+                .addMember("name","$S","sample")
+                .build();
+//        ClassName className = ClassName.get("javax.xml.bind.annotation.XmlAccessType","XmlAccessType");
+        ClassName className = ClassName.get(XmlAccessType.class);
+        AnnotationSpec annotationSpec2 = AnnotationSpec.builder(XmlAccessorType.class)
+//                .addMember("value","$L",XmlAccessType.FIELD)
+                .addMember("value","$T.$L",className,"FIELD")
+                .build();
+        builder.addAnnotation(annotationSpec1);
+        builder.addAnnotation(annotationSpec2);
+
         MethodSpec methodSpec = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC,Modifier.STATIC)
                 .returns(void.class)
@@ -60,7 +75,7 @@ public class CodeGenerator {
         JavaFile javaFile = JavaFile.builder("com.github",typeSpec).build();
         System.out.println(javaFile.toString());
 
-        javaFile = JavaFile.builder("com.github",builder.build()).build();
+        javaFile = JavaFile.builder("com.github",builder.build()).skipJavaLangImports(true).build();
         System.out.println(javaFile.toString());
     }
 }

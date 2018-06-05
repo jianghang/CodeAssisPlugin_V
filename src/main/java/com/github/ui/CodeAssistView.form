@@ -1,42 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.github.ui.CodeAssistView">
-  <grid id="27dc6" binding="sqlInputContent" layout-manager="GridLayoutManager" row-count="7" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="sqlInputContent" layout-manager="GridLayoutManager" row-count="6" column-count="8" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="17" y="20" width="781" height="424"/>
+      <xy x="17" y="20" width="781" height="652"/>
     </constraints>
     <properties>
       <autoscrolls value="false"/>
     </properties>
     <border type="none"/>
     <children>
-      <component id="43a00" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="SQL语句:"/>
-        </properties>
-      </component>
-      <component id="b1934" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="-&gt;"/>
-        </properties>
-      </component>
-      <component id="fb6ca" class="javax.swing.JLabel" binding="saveUri">
-        <constraints>
-          <grid row="4" column="3" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Java代码:"/>
-        </properties>
-      </component>
       <component id="80de4" class="javax.swing.JButton" binding="convertButton">
         <constraints>
-          <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="转换"/>
@@ -121,7 +97,7 @@
       </component>
       <component id="a1cc" class="javax.swing.JTextField" binding="packageNameField">
         <constraints>
-          <grid row="1" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="1" column="4" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -139,7 +115,7 @@
       </component>
       <component id="e3700" class="javax.swing.JTextField" binding="classNameField">
         <constraints>
-          <grid row="2" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="2" column="4" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -156,7 +132,7 @@
       </component>
       <component id="329a0" class="javax.swing.JTextField" binding="filePath">
         <constraints>
-          <grid row="3" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+          <grid row="3" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="179" height="30"/>
           </grid>
         </constraints>
@@ -166,7 +142,7 @@
       </component>
       <component id="448b8" class="javax.swing.JButton" binding="fileButton">
         <constraints>
-          <grid row="3" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
+          <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="38" height="30"/>
           </grid>
         </constraints>
@@ -184,44 +160,118 @@
       </component>
       <component id="ab9ee" class="javax.swing.JRadioButton" binding="xmlRadioButton" default-binding="true">
         <constraints>
-          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
-            <preferred-size width="66" height="23"/>
-          </grid>
+          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Xml"/>
         </properties>
       </component>
+      <tabbedpane id="95a79" binding="tabbedPane1" default-binding="true">
+        <constraints>
+          <grid row="4" column="3" row-span="1" col-span="5" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="b14f2" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="JavaSource"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="73459" class="com.intellij.ui.EditorTextField" binding="javaEditor" custom-create="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="250" height="200"/>
+                    <preferred-size width="200" height="200"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <autoscrolls value="false"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="ae3e1" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="MyBatis-Mapper"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="a70c5" class="com.intellij.ui.EditorTextField" binding="mapperEditor" custom-create="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="250" height="200"/>
+                    <preferred-size width="200" height="200"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </tabbedpane>
+      <tabbedpane id="d5a61" binding="tabbedPane2" default-binding="true">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="cac65" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="SQL"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="f02c0" class="com.intellij.ui.EditorTextField" binding="sqlEditor" custom-create="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="200" height="200"/>
+                    <preferred-size width="200" height="200"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </tabbedpane>
+      <component id="6083b" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="--&gt;"/>
+        </properties>
+      </component>
       <component id="43f32" class="javax.swing.JRadioButton" binding="jsonRadioButton" default-binding="true">
         <constraints>
-          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
-            <preferred-size width="39" height="23"/>
-          </grid>
+          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Json"/>
         </properties>
       </component>
-      <component id="73459" class="com.intellij.ui.EditorTextField" binding="javaEditor" custom-create="true">
+      <component id="86e37" class="javax.swing.JRadioButton" binding="unwantedRadioButton" default-binding="true">
         <constraints>
-          <grid row="5" column="3" row-span="1" col-span="4" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <minimum-size width="250" height="200"/>
-            <preferred-size width="200" height="200"/>
-          </grid>
+          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <autoscrolls value="false"/>
-        </properties>
-      </component>
-      <component id="f02c0" class="com.intellij.ui.EditorTextField" binding="sqlEditor" custom-create="true">
-        <constraints>
-          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <minimum-size width="200" height="200"/>
-            <preferred-size width="200" height="200"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value=""/>
+          <selected value="true"/>
+          <text value="Unwanted"/>
         </properties>
       </component>
     </children>
@@ -230,6 +280,7 @@
     <group name="AnnotationButtonGroup">
       <member id="ab9ee"/>
       <member id="43f32"/>
+      <member id="86e37"/>
     </group>
   </buttonGroups>
 </form>

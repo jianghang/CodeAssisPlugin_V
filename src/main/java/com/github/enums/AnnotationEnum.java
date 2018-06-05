@@ -1,6 +1,6 @@
 package com.github.enums;
 
-import com.github.generator.JsonAnnotationGenerator;
+import com.github.generator.AnnotationGenerator;
 import com.squareup.javapoet.AnnotationSpec;
 
 public enum AnnotationEnum {
@@ -8,7 +8,7 @@ public enum AnnotationEnum {
 
         @Override
         public AnnotationSpec buildAnnotation(String name, String parameter) {
-            AnnotationSpec annotationSpec = JsonAnnotationGenerator.buildJsonAnnotation(name,parameter);
+            AnnotationSpec annotationSpec = AnnotationGenerator.buildJSONField(name,parameter);
 
             return annotationSpec;
         }

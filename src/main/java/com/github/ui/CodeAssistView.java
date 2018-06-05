@@ -4,6 +4,7 @@ import com.github.db.DBUtils;
 import com.github.db.DatabaseTypeEnum;
 import com.github.utils.CodeStringUtils;
 import com.intellij.ide.highlighter.JavaFileType;
+import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -52,11 +53,14 @@ public class CodeAssistView extends BaseView{
     private JPasswordField passwordField;
     private JTextField packageNameField;
     private JTextField classNameField;
-    private JLabel saveUri;
     private JTextField filePath;
     private JButton fileButton;
     private JRadioButton xmlRadioButton;
     private JRadioButton jsonRadioButton;
+    private JTabbedPane tabbedPane1;
+    private JTabbedPane tabbedPane2;
+    private EditorTextField mapperEditor;
+    private JRadioButton unwantedRadioButton;
 
     public CodeAssistView(BasePanel basePanel,Project project,ToolWindow toolWindow){
         super(basePanel,project,toolWindow);
@@ -160,6 +164,8 @@ public class CodeAssistView extends BaseView{
         xmlRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
 
         jsonRadioButton.addActionListener(e -> annotationStr = jsonRadioButton.getText());
+
+        unwantedRadioButton.addActionListener(e -> annotationStr = unwantedRadioButton.getText());
     }
 
     @Override
@@ -234,5 +240,16 @@ public class CodeAssistView extends BaseView{
             }
         };
         sqlEditor.setOneLineMode(false);
+
+        mapperEditor = new EditorTextField("",project,XmlFileType.INSTANCE){
+            @Override
+            protected EditorEx createEditor() {
+                EditorEx editorEx = super.createEditor();
+                editorEx.setVerticalScrollbarVisible(true);
+                editorEx.setHorizontalScrollbarVisible(true);
+                return editorEx;
+            }
+        };
+        mapperEditor.setOneLineMode(false);
     }
 }

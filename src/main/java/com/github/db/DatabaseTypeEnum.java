@@ -1,6 +1,7 @@
 package com.github.db;
 
 import com.github.enums.AnnotationEnum;
+import com.github.generator.AnnotationGenerator;
 import com.github.generator.CodeGenerator;
 import com.github.param.GlobalParameter;
 import com.github.utils.CodeStringUtils;
@@ -21,10 +22,10 @@ public enum DatabaseTypeEnum {
             String columnName;
             OralceDataTypeEunm dataTypeEnum;
             TypeSpec.Builder builder = CodeGenerator.buildClass(className);
+            addClassXmlAnnotation(annotationType,builder,className);
             FieldSpec fieldSpec;
             MethodSpec.Builder getMethodSpec;
             MethodSpec.Builder setMethodSpec;
-            AnnotationSpec annotationSpec;
             List<FieldSpec> fieldSpecList = new ArrayList<>();
             List<MethodSpec> methodSpecList = new ArrayList<>();
             for(int i = 1;i <= metaData.getColumnCount();i++){
@@ -38,11 +39,7 @@ public enum DatabaseTypeEnum {
                 getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,dataTypeEnum.getJavaClass());
                 setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName,dataTypeEnum.getJavaClass());
                 fieldSpec = FieldSpec.builder(dataTypeEnum.getJavaClass(),columnName,Modifier.PRIVATE).build();
-                if(AnnotationEnum.JSON.getType().equals(annotationType)){
-                    annotationSpec = AnnotationEnum.JSON.buildAnnotation(GlobalParameter.JSON_FIELD_NAME,columnName);
-                    getMethodSpec.addAnnotation(annotationSpec);
-                    setMethodSpec.addAnnotation(annotationSpec);
-                }
+                addJsonAnnotation(annotationType,columnName,getMethodSpec,setMethodSpec);
                 methodSpecList.add(getMethodSpec.build());
                 methodSpecList.add(setMethodSpec.build());
                 fieldSpecList.add(fieldSpec);
@@ -50,7 +47,7 @@ public enum DatabaseTypeEnum {
 
             fieldSpecList.forEach(builder::addField);
             methodSpecList.forEach(builder::addMethod);
-            JavaFile javaFile = JavaFile.builder(packageName,builder.build()).build();
+            JavaFile javaFile = JavaFile.builder(packageName,builder.build()).skipJavaLangImports(true).build();
 
             return javaFile.toString();
         }
@@ -63,10 +60,10 @@ public enum DatabaseTypeEnum {
             String columnName;
             MySqlDataTypeEnum dataTypeEnum;
             TypeSpec.Builder builder = CodeGenerator.buildClass(className);
+            addClassXmlAnnotation(annotationType,builder,className);
             FieldSpec fieldSpec;
             MethodSpec.Builder getMethodSpec;
             MethodSpec.Builder setMethodSpec;
-            AnnotationSpec annotationSpec;
             List<FieldSpec> fieldSpecList = new ArrayList<>();
             List<MethodSpec> methodSpecList = new ArrayList<>();
             for(int i = 1;i <= metaData.getColumnCount();i++){
@@ -80,11 +77,7 @@ public enum DatabaseTypeEnum {
                 getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,dataTypeEnum.getJavaClass());
                 setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName,dataTypeEnum.getJavaClass());
                 fieldSpec = FieldSpec.builder(dataTypeEnum.getJavaClass(),columnName,Modifier.PRIVATE).build();
-                if(AnnotationEnum.JSON.getType().equals(annotationType)){
-                    annotationSpec = AnnotationEnum.JSON.buildAnnotation(GlobalParameter.JSON_FIELD_NAME,columnName);
-                    getMethodSpec.addAnnotation(annotationSpec);
-                    setMethodSpec.addAnnotation(annotationSpec);
-                }
+                addJsonAnnotation(annotationType,columnName,getMethodSpec,setMethodSpec);
                 methodSpecList.add(getMethodSpec.build());
                 methodSpecList.add(setMethodSpec.build());
                 fieldSpecList.add(fieldSpec);
@@ -92,7 +85,7 @@ public enum DatabaseTypeEnum {
 
             fieldSpecList.forEach(builder::addField);
             methodSpecList.forEach(builder::addMethod);
-            JavaFile javaFile = JavaFile.builder(packageName,builder.build()).build();
+            JavaFile javaFile = JavaFile.builder(packageName,builder.build()).skipJavaLangImports(true).build();
 
             return javaFile.toString();
         }
@@ -136,6 +129,28 @@ public enum DatabaseTypeEnum {
             }
         }
         return null;
+    }
+
+    public static void addJsonAnnotation(String annotationType, String columnName, MethodSpec.Builder ...builders){
+        if(!AnnotationEnum.JSON.getType().equals(annotationType)){
+            return;
+        }
+        AnnotationSpec annotationSpec;
+        for(MethodSpec.Builder builder : builders){
+            annotationSpec = AnnotationEnum.JSON.buildAnnotation(GlobalParameter.JSON_FIELD_NAME,columnName);
+            builder.addAnnotation(annotationSpec);
+        }
+    }
+
+    public static void addClassXmlAnnotation(String annotationType,TypeSpec.Builder builder,String className){
+        if(!AnnotationEnum.XML.getType().equals(annotationType)){
+            return;
+        }
+        className = Character.toLowerCase(className.charAt(0)) + className.substring(1,className.length());
+        AnnotationSpec annotationSpec = AnnotationGenerator.buildXmlRootElement("name",className);
+        builder.addAnnotation(annotationSpec);
+        annotationSpec = AnnotationGenerator.buildXmlAccessorType("FIELD");
+        builder.addAnnotation(annotationSpec);
     }
 
     public String getDataType() {
