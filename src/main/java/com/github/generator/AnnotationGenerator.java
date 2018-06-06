@@ -6,6 +6,7 @@ import com.squareup.javapoet.ClassName;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 public class AnnotationGenerator {
@@ -27,9 +28,16 @@ public class AnnotationGenerator {
     public static AnnotationSpec buildXmlAccessorType(String value){
         ClassName className = ClassName.get(XmlAccessType.class);
         AnnotationSpec annotationSpec = AnnotationSpec.builder(XmlAccessorType.class)
-                .addMember("value","$T.$L",className,"FIELD")
+                .addMember("value","$T.$L",className,value)
                 .build();
 
+        return annotationSpec;
+    }
+
+    public static AnnotationSpec buildXmlElement(String name,String parameter){
+        AnnotationSpec annotationSpec = AnnotationSpec.builder(XmlElement.class)
+                .addMember(name,"$S",parameter)
+                .build();
         return annotationSpec;
     }
 
