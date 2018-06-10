@@ -19,16 +19,16 @@ public class DBUtils {
     private static ConcurrentHashMap<String,DruidDataSource> dataSourceConcurrentHashMap = new ConcurrentHashMap<>();
 
     public static Connection getConnection(String projectName,String url,String username,String password) throws ClassNotFoundException, SQLException {
-        DruidDataSource dataSource = dataSourceConcurrentHashMap.get(projectName);
-        if(dataSource == null){
-            dataSource = new DruidDataSource();
-            dataSource.setUrl(url);
-            dataSource.setUsername(username);
-            dataSource.setPassword(password);
-            dataSourceConcurrentHashMap.put(projectName,dataSource);
-        }
+//        DruidDataSource dataSource = dataSourceConcurrentHashMap.get(projectName);
+//        if(dataSource == null){
+//            dataSource = new DruidDataSource();
+//            dataSource.setUrl(url);
+//            dataSource.setUsername(username);
+//            dataSource.setPassword(password);
+//            dataSourceConcurrentHashMap.put(projectName,dataSource);
+//        }
 
-        return dataSource.getConnection();
+        return DriverManager.getConnection(url,username,password);
     }
 
     public static ResultSetMetaData getResultSetMetaData(Connection conn,String sql) throws SQLException {
@@ -51,7 +51,7 @@ public class DBUtils {
         Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
         //3.通过数据库的连接操作数据库，实现增删改查（使用Statement类）
         Statement st = conn.createStatement();
-        String sql = "select * from sys_user";
+        String sql = "select t.id from sys_user t";
 //        sql = "select * from t_fwzy_ssl";
         ResultSet rs = st.executeQuery(sql);
         ResultSetMetaData resultSetMetaData = rs.getMetaData();
@@ -66,6 +66,7 @@ public class DBUtils {
         for (int i = 1; i <= count; i++) {
             String typeName = resultSetMetaData.getColumnTypeName(i);
             String columnName = resultSetMetaData.getColumnName(i);
+            System.out.println(resultSetMetaData.getColumnLabel(i));
             System.out.println(typeName + " : " + columnName);
             MySqlDataTypeEnum typeEnum = MySqlDataTypeEnum.valueOf(typeName);
             columnName = columnName.toLowerCase();

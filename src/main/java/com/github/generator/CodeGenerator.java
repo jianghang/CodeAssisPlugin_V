@@ -1,6 +1,8 @@
 package com.github.generator;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.google.googlejavaformat.java.Formatter;
+import com.google.googlejavaformat.java.FormatterException;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
@@ -42,7 +44,7 @@ public class CodeGenerator {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FormatterException {
         TypeSpec.Builder builder = buildClass("Sample");
         builder.addField(Integer.class,"sample",Modifier.PRIVATE);
 
@@ -77,5 +79,7 @@ public class CodeGenerator {
 
         javaFile = JavaFile.builder("com.github",builder.build()).skipJavaLangImports(true).build();
         System.out.println(javaFile.toString());
+        String formattedSource = new Formatter().formatSource(javaFile.toString());
+        System.out.println(formattedSource);
     }
 }

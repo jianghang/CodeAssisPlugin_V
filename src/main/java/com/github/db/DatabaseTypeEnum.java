@@ -30,7 +30,7 @@ public enum DatabaseTypeEnum {
             List<MethodSpec> methodSpecList = new ArrayList<>();
             for(int i = 1;i <= metaData.getColumnCount();i++){
                 typeName = metaData.getColumnTypeName(i);
-                columnName = metaData.getColumnName(i);
+                columnName = metaData.getColumnLabel(i);
                 columnName = columnName.toLowerCase();
                 if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
                     columnName = CodeStringUtils.underlineToCamelhump(columnName);
@@ -71,7 +71,7 @@ public enum DatabaseTypeEnum {
             List<MethodSpec> methodSpecList = new ArrayList<>();
             for(int i = 1;i <= metaData.getColumnCount();i++){
                 typeName = metaData.getColumnTypeName(i);
-                columnName = metaData.getColumnName(i);
+                columnName = metaData.getColumnLabel(i);
                 columnName = columnName.toLowerCase();
                 if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
                     columnName = CodeStringUtils.underlineToCamelhump(columnName);

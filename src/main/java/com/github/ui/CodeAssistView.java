@@ -27,7 +27,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class CodeAssistView extends BaseView{
+public class CodeAssistView extends BaseView {
 
     private static Logger logger = Logger.getLogger("CodeAssistView");
 
@@ -62,8 +62,8 @@ public class CodeAssistView extends BaseView{
     private EditorTextField mapperEditor;
     private JRadioButton unwantedRadioButton;
 
-    public CodeAssistView(BasePanel basePanel,Project project,ToolWindow toolWindow){
-        super(basePanel,project,toolWindow);
+    public CodeAssistView(BasePanel basePanel, Project project, ToolWindow toolWindow) {
+        super(basePanel, project, toolWindow);
         initListener();
         initState();
     }
@@ -71,32 +71,32 @@ public class CodeAssistView extends BaseView{
     private void initState() {
         PropertiesComponent component = PropertiesComponent.getInstance(this.project);
         String databaseType = component.getValue(DATABASE_TYPE);
-        if(StringUtils.isNotEmpty(databaseType)){
+        if (StringUtils.isNotEmpty(databaseType)) {
             logger.info("databaseType: " + databaseType + " " + DatabaseTypeEnum.getIndexByType(databaseType));
             dataBaseComboBox.setSelectedIndex(DatabaseTypeEnum.getIndexByType(databaseType));
         }
         String dataUrl = component.getValue(DATA_URL);
-        if(StringUtils.isNotEmpty(dataUrl)){
+        if (StringUtils.isNotEmpty(dataUrl)) {
             dataBaseUrl.setText(dataUrl);
         }
         String username = component.getValue(USERNAME);
-        if(StringUtils.isNotEmpty(username)){
+        if (StringUtils.isNotEmpty(username)) {
             userNameField.setText(username);
         }
         String password = component.getValue(PASSWORD);
-        if(StringUtils.isNotEmpty(password)){
+        if (StringUtils.isNotEmpty(password)) {
             passwordField.setText(password);
         }
         String packageName = component.getValue(PACKAGE_NAME);
-        if(StringUtils.isNotEmpty(packageName)){
+        if (StringUtils.isNotEmpty(packageName)) {
             packageNameField.setText(packageName);
         }
         String className = component.getValue(CLASS_NAME);
-        if(StringUtils.isNotEmpty(className)){
+        if (StringUtils.isNotEmpty(className)) {
             classNameField.setText(className);
         }
         String sqlContent = component.getValue(SQL_CONTENT);
-        if(StringUtils.isNotEmpty(sqlContent)){
+        if (StringUtils.isNotEmpty(sqlContent)) {
             sqlEditor.setText(sqlContent);
         }
     }
@@ -116,36 +116,42 @@ public class CodeAssistView extends BaseView{
             logger.info("packageName: " + packageName + " className: " + className);
             logger.info("dataBaseComboBox Index: " + dataBaseComboBox.getSelectedIndex());
             logger.info("Annotation: " + annotationStr);
-            boolean checkResult = CodeStringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
-            if(checkResult){
+            boolean checkResult = CodeStringUtils.checkStringsEmpty(dataUrl, username, password, packageName, className);
+            if (checkResult) {
                 showMessage("有必填字段为空");
                 return;
             }
 
             loadDatabaseDriver(databaseType);
-            Connection conn;
+            Connection conn = null;
             String sqlContent = null;
             try {
-                conn = DBUtils.getConnection(project.getName(),dataUrl,username,password);
+                conn = DBUtils.getConnection(project.getName(), dataUrl, username, password);
                 sqlContent = sqlEditor.getText();
-                if(StringUtils.isEmpty(sqlContent)){
+                if (StringUtils.isEmpty(sqlContent)) {
                     showMessage("SQL语句为空");
                     return;
                 }
-                ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn,sqlContent);
+                ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn, sqlContent);
                 String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType))
-                        .buildJavaCode(metaData,className,packageName,annotationStr);
+                        .buildJavaCode(metaData, className, packageName, annotationStr);
                 javaEditor.setText(javaCode);
 
-                if(StringUtils.isNotEmpty(filePath.getText())){
-                    createFileInWriteCommandAction(psiPackage,className,javaCode);
+                if (StringUtils.isNotEmpty(filePath.getText())) {
+                    createFileInWriteCommandAction(psiPackage, className, javaCode);
                 }
             } catch (ClassNotFoundException | SQLException e1) {
                 e1.printStackTrace();
                 showMessage(e1.getMessage());
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
 
-            saveCurrentState(databaseType,dataUrl,username,password,packageName,className,sqlContent);
+            saveCurrentState(databaseType, dataUrl, username, password, packageName, className, sqlContent);
         });
 
 //        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(true,true,true,true,true,false);
@@ -153,10 +159,10 @@ public class CodeAssistView extends BaseView{
 //        fileButton.addBrowseFolderListener(folderListener);
 
         fileButton.addActionListener(e -> {
-            PackageChooserDialog packageChooserDialog = new PackageChooserDialog("Select Package Path",project);
+            PackageChooserDialog packageChooserDialog = new PackageChooserDialog("Select Package Path", project);
             packageChooserDialog.show();
             psiPackage = packageChooserDialog.getSelectedPackage();
-            if(Objects.nonNull(psiPackage)){
+            if (Objects.nonNull(psiPackage)) {
                 filePath.setText(psiPackage.getQualifiedName());
             }
         });
@@ -173,18 +179,18 @@ public class CodeAssistView extends BaseView{
         return sqlInputContent;
     }
 
-    private void createFileInWriteCommandAction(PsiPackage psiPackage,String className,String javaSource){
+    private void createFileInWriteCommandAction(PsiPackage psiPackage, String className, String javaSource) {
         final String fileName = className + JavaFileType.DOT_DEFAULT_EXTENSION;
         PsiDirectory psiDirectory = psiPackage.getDirectories()[0];
         PsiFile psiFile = psiDirectory.findFile(fileName);
-        if(Objects.nonNull(psiFile)){
+        if (Objects.nonNull(psiFile)) {
             showMessage(fileName + " file is exist!");
             return;
         }
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-            PsiFile psiFileContent = psiFileFactory.createFileFromText(fileName,JavaFileType.INSTANCE,javaSource);
+            PsiFile psiFileContent = psiFileFactory.createFileFromText(fileName, JavaFileType.INSTANCE, javaSource);
             PsiDirectory[] psiDirectories = psiPackage.getDirectories();
             logger.info("directory name: " + psiDirectories[0].getName());
 
@@ -194,18 +200,18 @@ public class CodeAssistView extends BaseView{
 
     private void showMessage(String content) {
         Icon icon = new ImageIcon(getClass().getResource("/myToolWindow/plus.png"));
-        Messages.showMessageDialog(project,content,"CodeAssist",icon);
+        Messages.showMessageDialog(project, content, "CodeAssist", icon);
     }
 
-    private void saveCurrentState(String databaseType, String dataUrl, String username, String password, String packageName, String className,String sqlContent) {
+    private void saveCurrentState(String databaseType, String dataUrl, String username, String password, String packageName, String className, String sqlContent) {
         PropertiesComponent propertiesComponent = PropertiesComponent.getInstance(project);
-        propertiesComponent.setValue(DATABASE_TYPE,databaseType);
-        propertiesComponent.setValue(DATA_URL,dataUrl);
-        propertiesComponent.setValue(USERNAME,username);
-        propertiesComponent.setValue(PASSWORD,password);
-        propertiesComponent.setValue(PACKAGE_NAME,packageName);
-        propertiesComponent.setValue(CLASS_NAME,className);
-        propertiesComponent.setValue(SQL_CONTENT,sqlContent);
+        propertiesComponent.setValue(DATABASE_TYPE, databaseType);
+        propertiesComponent.setValue(DATA_URL, dataUrl);
+        propertiesComponent.setValue(USERNAME, username);
+        propertiesComponent.setValue(PASSWORD, password);
+        propertiesComponent.setValue(PACKAGE_NAME, packageName);
+        propertiesComponent.setValue(CLASS_NAME, className);
+        propertiesComponent.setValue(SQL_CONTENT, sqlContent);
     }
 
     private void loadDatabaseDriver(String dataType) {
@@ -219,7 +225,7 @@ public class CodeAssistView extends BaseView{
     }
 
     private void createUIComponents() {
-        javaEditor = new EditorTextField("",project,JavaFileType.INSTANCE){
+        javaEditor = new EditorTextField("", project, JavaFileType.INSTANCE) {
             @Override
             protected EditorEx createEditor() {
                 EditorEx editorEx = super.createEditor();
@@ -230,7 +236,7 @@ public class CodeAssistView extends BaseView{
         };
         javaEditor.setOneLineMode(false);
 
-        sqlEditor = new EditorTextField("",project,PlainTextFileType.INSTANCE){
+        sqlEditor = new EditorTextField("", project, PlainTextFileType.INSTANCE) {
             @Override
             protected EditorEx createEditor() {
                 EditorEx editorEx = super.createEditor();
@@ -241,7 +247,7 @@ public class CodeAssistView extends BaseView{
         };
         sqlEditor.setOneLineMode(false);
 
-        mapperEditor = new EditorTextField("",project,XmlFileType.INSTANCE){
+        mapperEditor = new EditorTextField("", project, XmlFileType.INSTANCE) {
             @Override
             protected EditorEx createEditor() {
                 EditorEx editorEx = super.createEditor();
