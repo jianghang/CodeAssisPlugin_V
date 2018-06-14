@@ -133,33 +133,33 @@ public class SQLInputWindow implements ToolWindowFactory {
     }
 
     private void createFileInWriteCommandAction(PsiPackage psiPackage,String className,String javaSource){
-        final String fileName = className + JavaFileType.DOT_DEFAULT_EXTENSION;
-        PsiDirectory psiDirectory = psiPackage.getDirectories()[0];
-        PsiFile psiFile = psiDirectory.findFile(fileName);
-        if(Objects.nonNull(psiFile)){
-            showMessage(fileName + " file is exist!");
-            return;
-        }
-
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-            PsiFile psiFileContent = psiFileFactory.createFileFromText(fileName,JavaFileType.INSTANCE,javaSource);
-            PsiDirectory[] psiDirectories = psiPackage.getDirectories();
-            logger.info("directory name: " + psiDirectories[0].getName());
-
-            psiDirectories[0].add(psiFileContent);
-        });
+//        final String fileName = className + JavaFileType.DOT_DEFAULT_EXTENSION;
+//        PsiDirectory psiDirectory = psiPackage.getDirectories()[0];
+//        PsiFile psiFile = psiDirectory.findFile(fileName);
+//        if(Objects.nonNull(psiFile)){
+//            showMessage(fileName + " file is exist!");
+//            return;
+//        }
+//
+//        WriteCommandAction.runWriteCommandAction(project, () -> {
+//            PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+//            PsiFile psiFileContent = psiFileFactory.createFileFromText(fileName,JavaFileType.INSTANCE,javaSource);
+//            PsiDirectory[] psiDirectories = psiPackage.getDirectories();
+//            logger.info("directory name: " + psiDirectories[0].getName());
+//
+//            psiDirectories[0].add(psiFileContent);
+//        });
     }
 
     private void saveCurrentState(String databaseType, String dataUrl, String username, String password, String packageName, String className,String sqlContent) {
-        PropertiesComponent propertiesComponent = PropertiesComponent.getInstance(project);
-        propertiesComponent.setValue(DATABASE_TYPE,databaseType);
-        propertiesComponent.setValue(DATA_URL,dataUrl);
-        propertiesComponent.setValue(USERNAME,username);
-        propertiesComponent.setValue(PASSWORD,password);
-        propertiesComponent.setValue(PACKAGE_NAME,packageName);
-        propertiesComponent.setValue(CLASS_NAME,className);
-        propertiesComponent.setValue(SQL_CONTENT,sqlContent);
+//        PropertiesComponent propertiesComponent = PropertiesComponent.getInstance(project);
+//        propertiesComponent.setValue(DATABASE_TYPE,databaseType);
+//        propertiesComponent.setValue(DATA_URL,dataUrl);
+//        propertiesComponent.setValue(USERNAME,username);
+//        propertiesComponent.setValue(PASSWORD,password);
+//        propertiesComponent.setValue(PACKAGE_NAME,packageName);
+//        propertiesComponent.setValue(CLASS_NAME,className);
+//        propertiesComponent.setValue(SQL_CONTENT,sqlContent);
     }
 
     private void loadDatabaseDriver(String dataType) {
