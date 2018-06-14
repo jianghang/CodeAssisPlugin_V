@@ -132,6 +132,7 @@ public class CodeAssistView extends BaseView {
                     showMessage("SQL语句为空");
                     return;
                 }
+                sqlContent = DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType).getPageSql(sqlContent);
                 ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn, sqlContent);
                 String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType))
                         .buildJavaCode(metaData, className, packageName, annotationStr);
@@ -140,7 +141,7 @@ public class CodeAssistView extends BaseView {
                 if (StringUtils.isNotEmpty(filePath.getText())) {
                     createFileInWriteCommandAction(psiPackage, className, javaCode);
                 }
-            } catch (ClassNotFoundException | SQLException e1) {
+            } catch (SQLException e1) {
                 e1.printStackTrace();
                 showMessage(e1.getMessage());
             } finally {

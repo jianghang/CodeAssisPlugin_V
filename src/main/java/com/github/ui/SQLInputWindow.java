@@ -106,7 +106,7 @@ public class SQLInputWindow implements ToolWindowFactory {
                 if(StringUtils.isNotEmpty(filePath.getText())){
                     createFileInWriteCommandAction(psiPackage,className,javaCode);
                 }
-            } catch (ClassNotFoundException | SQLException e1) {
+            } catch (SQLException e1) {
                 e1.printStackTrace();
                 showMessage(e1.getMessage());
             }

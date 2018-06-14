@@ -1,6 +1,5 @@
 package com.github.db;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.github.generator.CodeGenerator;
 import com.github.utils.CodeStringUtils;
 import com.squareup.javapoet.FieldSpec;
@@ -12,26 +11,14 @@ import javax.lang.model.element.Modifier;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DBUtils {
 
-    private static ConcurrentHashMap<String,DruidDataSource> dataSourceConcurrentHashMap = new ConcurrentHashMap<>();
-
-    public static Connection getConnection(String projectName,String url,String username,String password) throws ClassNotFoundException, SQLException {
-//        DruidDataSource dataSource = dataSourceConcurrentHashMap.get(projectName);
-//        if(dataSource == null){
-//            dataSource = new DruidDataSource();
-//            dataSource.setUrl(url);
-//            dataSource.setUsername(username);
-//            dataSource.setPassword(password);
-//            dataSourceConcurrentHashMap.put(projectName,dataSource);
-//        }
-
-        return DriverManager.getConnection(url,username,password);
+    public static Connection getConnection(String projectName, String url, String username, String password) throws SQLException {
+        return DriverManager.getConnection(url, username, password);
     }
 
-    public static ResultSetMetaData getResultSetMetaData(Connection conn,String sql) throws SQLException {
+    public static ResultSetMetaData getResultSetMetaData(Connection conn, String sql) throws SQLException {
         Statement statement = conn.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
         return resultSet.getMetaData();
@@ -70,21 +57,21 @@ public class DBUtils {
             System.out.println(typeName + " : " + columnName);
             MySqlDataTypeEnum typeEnum = MySqlDataTypeEnum.valueOf(typeName);
             columnName = columnName.toLowerCase();
-            if((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")){
+            if ((columnName.charAt(0) >= 'A' && columnName.charAt(0) <= 'Z') || columnName.contains("_")) {
                 columnName = CodeStringUtils.underlineToCamelhump(columnName);
             }
-            getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName,typeEnum.getJavaClass());
+            getMethodSpec = CodeGenerator.buildGetMethodSpec(columnName, typeEnum.getJavaClass());
             methodSpecList.add(getMethodSpec.build());
-            setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName,typeEnum.getJavaClass());
+            setMethodSpec = CodeGenerator.buildSetMethodSpec(columnName, typeEnum.getJavaClass());
             methodSpecList.add(setMethodSpec.build());
-            fieldSpec = FieldSpec.builder(typeEnum.getJavaClass(),columnName,Modifier.PRIVATE).build();
+            fieldSpec = FieldSpec.builder(typeEnum.getJavaClass(), columnName, Modifier.PRIVATE).build();
             fieldSpecList.add(fieldSpec);
             System.out.println(columnName + " : " + typeName);
         }
 
         fieldSpecList.forEach(builder::addField);
         methodSpecList.forEach(builder::addMethod);
-        JavaFile javaFile = JavaFile.builder("com.github",builder.build()).build();
+        JavaFile javaFile = JavaFile.builder("com.github", builder.build()).build();
         System.out.println(javaFile.toString());
 
         rs.close();
