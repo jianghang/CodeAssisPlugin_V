@@ -1,0 +1,2 @@
+mergeInto(id) ::= "<insert id=\"$id$\">
+</insert>"

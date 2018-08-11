@@ -146,6 +146,7 @@ public class CodeAssistView extends BaseView {
                 showMessage(e1.getMessage());
             } finally {
                 try {
+                    assert conn != null;
                     conn.close();
                 } catch (SQLException e1) {
                     e1.printStackTrace();

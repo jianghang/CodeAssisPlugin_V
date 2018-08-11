@@ -1,0 +1,7 @@
+resultMapTemplate(result,type) ::= "<resultMap id=\"BaseResultMap\" type=\"$type$\">
+    $resultTemplate(result)$
+</resultMap>"
+
+resultTemplate(result) ::= "$result :
+{item | <result column=\"$item.column$\" property=\"$item.property$\" jdbcType=\"$item.jdbcType$\" />
+}$"

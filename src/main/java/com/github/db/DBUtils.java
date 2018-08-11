@@ -29,17 +29,17 @@ public class DBUtils {
         String USER = "root";
         String PASSWORD = "admin";
 
-//        URL = "jdbc:oracle:thin:@192.168.0.58:1521:CXDATABASE";
-//        USER = "cobweb3";
-//        PASSWORD = "admin";
+        URL = "jdbc:oracle:thin:@192.168.0.58:1521:CXDATABASE";
+        USER = "cobweb3";
+        PASSWORD = "admin";
         //1.加载驱动程序
-        Class.forName(DatabaseTypeEnum.MYSQL.getDatabaseDriver());
+        Class.forName(DatabaseTypeEnum.ORACLE.getDatabaseDriver());
         //2.获得数据库链接
         Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
         //3.通过数据库的连接操作数据库，实现增删改查（使用Statement类）
         Statement st = conn.createStatement();
         String sql = "select t.id from sys_user t";
-//        sql = "select * from t_fwzy_ssl";
+        sql = "select * from t_fwzy_ssl";
         ResultSet rs = st.executeQuery(sql);
         ResultSetMetaData resultSetMetaData = rs.getMetaData();
 

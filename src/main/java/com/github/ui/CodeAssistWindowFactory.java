@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CodeAssistWindowFactory implements ToolWindowFactory {
 
-    public static final String TOOL_WINDOW_ID = "CodeAssistV";
+    public static final String TOOL_WINDOW_ID = "AssistV";
 
     private Project project;
 
@@ -49,6 +49,10 @@ public class CodeAssistWindowFactory implements ToolWindowFactory {
         CodeAssistVPanel codeAssistPanel = new CodeAssistVPanel(project,toolWindow);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(codeAssistPanel,"CodeAssistV",false);
-        toolWindow.getContentManager().addContent(content);
+        toolWindow.getContentManager().addContent(content,0);
+
+        SQLGeneratorPanel sqlGeneratorPanel = new SQLGeneratorPanel(project,toolWindow);
+        content = contentFactory.createContent(sqlGeneratorPanel,"SQLGenerator",false);
+        toolWindow.getContentManager().addContent(content,1);
     }
 }
