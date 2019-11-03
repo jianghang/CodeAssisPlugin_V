@@ -68,68 +68,68 @@ public class SQLInputWindow implements ToolWindowFactory {
 
     public SQLInputWindow() {
 
-        convertButton.addActionListener(e -> {
-            String databaseType = Objects.requireNonNull(dataBaseComboBox.getSelectedItem()).toString();
-            String dataUrl = dataBaseUrl.getText();
-            String username = userNameField.getText();
-            char[] passwordChar = passwordField.getPassword();
-            String password = String.valueOf(passwordChar);
-            String packageName = packageNameField.getText();
-            String className = classNameField.getText();
-
-            logger.info("databaseType: " + databaseType);
-            logger.info("dataUrl: " + dataUrl + " username: " + username + " password: " + password);
-            logger.info("packageName: " + packageName + " className: " + className);
-            logger.info("dataBaseComboBox Index: " + dataBaseComboBox.getSelectedIndex());
-            logger.info("Annotation: " + annotationStr);
-            boolean checkResult = CodeStringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
-            if(checkResult){
-                showMessage("有必填字段为空");
-                return;
-            }
-
-            loadDatabaseDriver(databaseType);
-            Connection conn;
-            String sqlContent = null;
-            try {
-                conn = DBUtils.getConnection(project.getName(),dataUrl,username,password);
-                sqlContent = sqlEditor.getText();
-                if(StringUtils.isEmpty(sqlContent)){
-                    showMessage("SQL语句为空");
-                    return;
-                }
-                ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn,sqlContent);
-                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType))
-                        .buildJavaCode(metaData,className,packageName,null);
-                javaEditor.setText(javaCode);
-
-                if(StringUtils.isNotEmpty(filePath.getText())){
-                    createFileInWriteCommandAction(psiPackage,className,javaCode);
-                }
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-                showMessage(e1.getMessage());
-            }
-
-            saveCurrentState(databaseType,dataUrl,username,password,packageName,className,sqlContent);
-        });
-
-//        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(true,true,true,true,true,false);
-//        TextBrowseFolderListener folderListener = new TextBrowseFolderListener(fileChooserDescriptor,project);
-//        fileButton.addBrowseFolderListener(folderListener);
-
-        fileButton.addActionListener(e -> {
-            PackageChooserDialog packageChooserDialog = new PackageChooserDialog("Select Package Path",project);
-            packageChooserDialog.show();
-            psiPackage = packageChooserDialog.getSelectedPackage();
-            if(Objects.nonNull(psiPackage)){
-                filePath.setText(psiPackage.getQualifiedName());
-            }
-        });
-
-        xmlRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
-
-        jsonRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
+//        convertButton.addActionListener(e -> {
+//            String databaseType = Objects.requireNonNull(dataBaseComboBox.getSelectedItem()).toString();
+//            String dataUrl = dataBaseUrl.getText();
+//            String username = userNameField.getText();
+//            char[] passwordChar = passwordField.getPassword();
+//            String password = String.valueOf(passwordChar);
+//            String packageName = packageNameField.getText();
+//            String className = classNameField.getText();
+//
+//            logger.info("databaseType: " + databaseType);
+//            logger.info("dataUrl: " + dataUrl + " username: " + username + " password: " + password);
+//            logger.info("packageName: " + packageName + " className: " + className);
+//            logger.info("dataBaseComboBox Index: " + dataBaseComboBox.getSelectedIndex());
+//            logger.info("Annotation: " + annotationStr);
+//            boolean checkResult = CodeStringUtils.checkStringsEmpty(dataUrl,username,password,packageName,className);
+//            if(checkResult){
+//                showMessage("有必填字段为空");
+//                return;
+//            }
+//
+//            loadDatabaseDriver(databaseType);
+//            Connection conn;
+//            String sqlContent = null;
+//            try {
+//                conn = DBUtils.getConnection(project.getName(),dataUrl,username,password);
+//                sqlContent = sqlEditor.getText();
+//                if(StringUtils.isEmpty(sqlContent)){
+//                    showMessage("SQL语句为空");
+//                    return;
+//                }
+//                ResultSetMetaData metaData = DBUtils.getResultSetMetaData(conn,sqlContent);
+//                String javaCode = Objects.requireNonNull(DatabaseTypeEnum.getDatabaseTypeEnumByType(databaseType))
+//                        .buildJavaCode(metaData,className,packageName,null);
+//                javaEditor.setText(javaCode);
+//
+//                if(StringUtils.isNotEmpty(filePath.getText())){
+//                    createFileInWriteCommandAction(psiPackage,className,javaCode);
+//                }
+//            } catch (SQLException e1) {
+//                e1.printStackTrace();
+//                showMessage(e1.getMessage());
+//            }
+//
+//            saveCurrentState(databaseType,dataUrl,username,password,packageName,className,sqlContent);
+//        });
+//
+////        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(true,true,true,true,true,false);
+////        TextBrowseFolderListener folderListener = new TextBrowseFolderListener(fileChooserDescriptor,project);
+////        fileButton.addBrowseFolderListener(folderListener);
+//
+//        fileButton.addActionListener(e -> {
+//            PackageChooserDialog packageChooserDialog = new PackageChooserDialog("Select Package Path",project);
+//            packageChooserDialog.show();
+//            psiPackage = packageChooserDialog.getSelectedPackage();
+//            if(Objects.nonNull(psiPackage)){
+//                filePath.setText(psiPackage.getQualifiedName());
+//            }
+//        });
+//
+//        xmlRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
+//
+//        jsonRadioButton.addActionListener(e -> annotationStr = xmlRadioButton.getText());
     }
 
     private void createFileInWriteCommandAction(PsiPackage psiPackage,String className,String javaSource){
@@ -190,35 +190,35 @@ public class SQLInputWindow implements ToolWindowFactory {
         contentManager.addContent(content);
         contentManager.setSelectedContent(content);
 
-        PropertiesComponent component = PropertiesComponent.getInstance(this.project);
-        String databaseType = component.getValue(DATABASE_TYPE);
-        if(StringUtils.isNotEmpty(databaseType)){
-            logger.info("databaseType: " + databaseType + " " + DatabaseTypeEnum.getIndexByType(databaseType));
-            dataBaseComboBox.setSelectedIndex(DatabaseTypeEnum.getIndexByType(databaseType));
-        }
-        String dataUrl = component.getValue(DATA_URL);
-        if(StringUtils.isNotEmpty(dataUrl)){
-            dataBaseUrl.setText(dataUrl);
-        }
-        String username = component.getValue(USERNAME);
-        if(StringUtils.isNotEmpty(username)){
-            userNameField.setText(username);
-        }
-        String password = component.getValue(PASSWORD);
-        if(StringUtils.isNotEmpty(password)){
-            passwordField.setText(password);
-        }
-        String packageName = component.getValue(PACKAGE_NAME);
-        if(StringUtils.isNotEmpty(packageName)){
-            packageNameField.setText(packageName);
-        }
-        String className = component.getValue(CLASS_NAME);
-        if(StringUtils.isNotEmpty(className)){
-            classNameField.setText(className);
-        }
-        String sqlContent = component.getValue(SQL_CONTENT);
-        if(StringUtils.isNotEmpty(sqlContent)){
-            sqlEditor.setText(sqlContent);
-        }
+//        PropertiesComponent component = PropertiesComponent.getInstance(this.project);
+//        String databaseType = component.getValue(DATABASE_TYPE);
+//        if(StringUtils.isNotEmpty(databaseType)){
+//            logger.info("databaseType: " + databaseType + " " + DatabaseTypeEnum.getIndexByType(databaseType));
+//            dataBaseComboBox.setSelectedIndex(DatabaseTypeEnum.getIndexByType(databaseType));
+//        }
+//        String dataUrl = component.getValue(DATA_URL);
+//        if(StringUtils.isNotEmpty(dataUrl)){
+//            dataBaseUrl.setText(dataUrl);
+//        }
+//        String username = component.getValue(USERNAME);
+//        if(StringUtils.isNotEmpty(username)){
+//            userNameField.setText(username);
+//        }
+//        String password = component.getValue(PASSWORD);
+//        if(StringUtils.isNotEmpty(password)){
+//            passwordField.setText(password);
+//        }
+//        String packageName = component.getValue(PACKAGE_NAME);
+//        if(StringUtils.isNotEmpty(packageName)){
+//            packageNameField.setText(packageName);
+//        }
+//        String className = component.getValue(CLASS_NAME);
+//        if(StringUtils.isNotEmpty(className)){
+//            classNameField.setText(className);
+//        }
+//        String sqlContent = component.getValue(SQL_CONTENT);
+//        if(StringUtils.isNotEmpty(sqlContent)){
+//            sqlEditor.setText(sqlContent);
+//        }
     }
 }

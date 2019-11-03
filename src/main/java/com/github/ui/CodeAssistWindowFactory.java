@@ -21,9 +21,9 @@ public class CodeAssistWindowFactory implements ToolWindowFactory {
         this.project = project;
         toolWindow.setToHideOnEmptyContent(true);
 
-        createContents(project,toolWindow);
+        createContents(project, toolWindow);
         ToolWindowManager manager = ToolWindowManager.getInstance(project);
-        if(manager instanceof ToolWindowManagerEx){
+        if (manager instanceof ToolWindowManagerEx) {
             ToolWindowManagerEx managerEx = (ToolWindowManagerEx) manager;
             managerEx.addToolWindowManagerListener(new ToolWindowManagerListener() {
                 @Override
@@ -34,10 +34,10 @@ public class CodeAssistWindowFactory implements ToolWindowFactory {
                 @Override
                 public void stateChanged() {
                     ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow(CodeAssistWindowFactory.TOOL_WINDOW_ID);
-                    if(window != null){
+                    if (window != null) {
                         boolean visible = window.isVisible();
-                        if(visible && toolWindow.getContentManager().getContentCount() == 0){
-                            createContents(project,window);
+                        if (visible && toolWindow.getContentManager().getContentCount() == 0) {
+                            createContents(project, window);
                         }
                     }
                 }
@@ -45,14 +45,18 @@ public class CodeAssistWindowFactory implements ToolWindowFactory {
         }
     }
 
-    private void createContents(@NotNull Project project,@NotNull ToolWindow toolWindow){
-        CodeAssistVPanel codeAssistPanel = new CodeAssistVPanel(project,toolWindow);
+    private void createContents(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        CodeAssistVPanel codeAssistPanel = new CodeAssistVPanel(project, toolWindow);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(codeAssistPanel,"CodeAssistV",false);
-        toolWindow.getContentManager().addContent(content,0);
+        Content content = contentFactory.createContent(codeAssistPanel, "CodeAssistV", false);
+        toolWindow.getContentManager().addContent(content, 0);
 
-        SQLGeneratorPanel sqlGeneratorPanel = new SQLGeneratorPanel(project,toolWindow);
-        content = contentFactory.createContent(sqlGeneratorPanel,"SQLGenerator",false);
-        toolWindow.getContentManager().addContent(content,1);
+//        SQLGeneratorPanel sqlGeneratorPanel = new SQLGeneratorPanel(project, toolWindow);
+//        content = contentFactory.createContent(sqlGeneratorPanel, "SQLGenerator", false);
+//        toolWindow.getContentManager().addContent(content, 1);
+
+        DataComparePanel dataComparePanel = new DataComparePanel(project, toolWindow);
+        content = contentFactory.createContent(dataComparePanel, "DataCompare", false);
+        toolWindow.getContentManager().addContent(content, 1);
     }
 }

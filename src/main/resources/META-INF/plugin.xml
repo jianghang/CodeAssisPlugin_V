@@ -8,7 +8,7 @@
 
     <description>Code Assist.This is an auxiliary plug-in that generates Java code through SQL statement. At present, it only supports MySQL.</description>
 
-    <change-notes>This is the first version</change-notes>
+    <change-notes>This is the first version. sql generator</change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

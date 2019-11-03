@@ -3,6 +3,7 @@ package com.github.ui;
 import com.github.db.DBUtils;
 import com.github.db.DatabaseTypeEnum;
 import com.github.utils.CodeStringUtils;
+import com.google.common.base.Charsets;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.ide.util.PackageChooserDialog;
@@ -202,6 +203,7 @@ public class CodeAssistView extends BaseView {
 
     private void showMessage(String content) {
         Icon icon = new ImageIcon(getClass().getResource("/myToolWindow/plus.png"));
+//        content = new String(content.getBytes(), Charsets.UTF_8);
         Messages.showMessageDialog(project, content, "CodeAssist", icon);
     }
 

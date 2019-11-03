@@ -105,3 +105,4 @@ fabric.properties
 /build/
 /.idea/
 /.gradle/
+/CodeAssistPlugin_V.iml

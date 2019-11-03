@@ -63,7 +63,7 @@ public enum DatabaseTypeEnum {
             return dialect.getPageSql(sql, 0, 1);
         }
     },
-    MYSQL("MySQL", "com.mysql.jdbc.Driver", 1) {
+    MYSQL("MySQL", "com.mysql.cj.jdbc.Driver", 1) {
         @Override
         public String buildJavaCode(ResultSetMetaData metaData, String className, String packageName, String annotationType) throws SQLException {
             String typeName;
