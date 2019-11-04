@@ -21,7 +21,7 @@ public interface GlobalParameter {
             "\tt.TABLE_NAME,\n" +
             "\tt.ORDINAL_POSITION;";
 
-    String MYSQL_LINK_URL = "jdbc:mysql://%s?useUnicode=true&characterEncoding=utf8";
+    String MYSQL_LINK_URL = "jdbc:mysql://%s?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
 
     String SOURCE_DATA_LINK_KEY = "sourceDataLink";
     String SOURCE_USER_NAME_KEY = "sourceUserName";
