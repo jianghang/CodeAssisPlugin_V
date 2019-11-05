@@ -5,8 +5,8 @@ public interface GlobalParameter {
     String JSON_FIELD_NAME = "name";
 
     String SELECT_TABLE_INFO_SQL = "SELECT\n" +
-            "\tCONCAT_WS(';',t.TABLE_NAME, t.COLUMN_NAME, t.ORDINAL_POSITION, t.COLUMN_TYPE ) AS columnSortKey,\n" +
-            "\tCONCAT_WS(';',t.TABLE_NAME, t.COLUMN_NAME, t.COLUMN_TYPE ) AS columnKey,\n" +
+            "\tlower(CONCAT_WS(';',t.TABLE_NAME, t.COLUMN_NAME, t.ORDINAL_POSITION, t.COLUMN_TYPE )) AS columnSortKey,\n" +
+            "\tlower(CONCAT_WS(';',t.TABLE_NAME, t.COLUMN_NAME, t.COLUMN_TYPE )) AS columnKey,\n" +
             "\tt.TABLE_SCHEMA as tableSchema,\n" +
             "\tt.TABLE_NAME as tableName,\n" +
             "\tt.COLUMN_NAME as columnName,\n" +
